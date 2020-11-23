@@ -1,13 +1,29 @@
-const $btnKick = document.getElementById('btn-kick');
-const $logs = document.getElementById('logs');
+const $btnKick = getDOMElement('btn-kick');
+const $btnSuperKick = getDOMElement('btn-super-kick');
+const $logs = getDOMElement('logs');
 
-$btnKick.addEventListener('click', function() {
-    run(20);
-});
+const initCounterPressingBtn = (count = 0) => (max) => {
+    count += 1;
+    if (count > max) return count;
 
-const getDOMElement = function(id) {
-    return document.getElementById(id);
-}
+    console.log(`Количество нажатий на кнопку: ${count}`);
+    console.log(`Осталось нажатий: ${max - count}`);
+    return count;
+};
+
+const counterKick = initCounterPressingBtn(0);
+const counterSuperKick = initCounterPressingBtn(0);
+
+const onRun = (damage, maxPressBtn, callback) => {
+    const count = callback(maxPressBtn);
+    if (count > maxPressBtn) return;
+
+    character.changeHP(getRandom(damage), enemy.name);
+    enemy.changeHP(getRandom(damage), character.name);
+};
+
+$btnKick.addEventListener('click', () => onRun(20, 6, counterKick));
+$btnSuperKick.addEventListener('click', () => onRun(60, 2, counterSuperKick));
 
 const Person = function(
     name,
@@ -93,11 +109,6 @@ function renderLog(name, enemyName, hp, damage) {
     $logs.insertBefore(logContainer, $logs.children[0]);
 }
 
-function run(maxDamage) {
-    character.changeHP(getRandom(maxDamage), enemy.name);
-    enemy.changeHP(getRandom(maxDamage), character.name);
-}
-
 function getRandom(num) {
     const rand = Math.random() * (num + 1);
     return Math.floor(rand);
@@ -106,6 +117,11 @@ function getRandom(num) {
 function endGame(name) {
     alert(`Персонаж ${name} проиграл`);
     $btnKick.disabled = true;
+    $btnSuperKick.disabled = true;
+}
+
+function getDOMElement(id) {
+    return document.getElementById(id);
 }
 
 init();
