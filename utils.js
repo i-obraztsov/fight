@@ -1,5 +1,5 @@
-export function getRandom(num) {
-    const rand = Math.random() * (num + 1);
+export function getRandom(min, max) {
+    const rand = min + Math.random() * (max + 1 - min);
     return Math.floor(rand);
 }
 

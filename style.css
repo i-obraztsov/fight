@@ -40,8 +40,7 @@ body {
     position: relative;
     margin: 20px;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
 }
 
 .playground {
@@ -276,8 +275,8 @@ body {
     outline: none !important;
     cursor: pointer;
     font-size: 18px;
-    margin-right: 10px;
-
+    width: 100%;
+    margin-bottom: 20px;
 }
 .button:after {
     content: "";
@@ -300,9 +299,6 @@ body {
     background: -webkit-gradient(linear, left top, left bottom, from(#ffd78e), to(#ffc55b));
     background: linear-gradient(to bottom, #ffd78e, #ffc55b);
     box-shadow: 0 0 5px 2px white, 0 0 15px #ffe9c1, 0 3px 5px -2px rgba(0, 0, 0, 0.2);
-}
-.button:last-child {
-    margin-right: 0;
 }
 
 .candy {
@@ -475,4 +471,11 @@ h1 {
 
 .action label {
     padding: 6px 0;
+}
+
+.game_over {
+    font-size: 60px;
+    font-weight: 900;
+    color: #805cff;
+    margin-bottom: 20px;
 }
