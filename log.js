@@ -16,7 +16,7 @@ const getMessage = (person1, person2) => {
         `[${person1}] пытался что-то сказать, но вдруг, неожиданно [${person2}] со скуки, разбил бровь сопернику.`
     ];
 
-    return logs[getRandom(logs.length - 1)];
+    return logs[getRandom(0, logs.length - 1)];
 }
 
 export function renderLog(player1, player2, count) {
@@ -32,7 +32,9 @@ export function renderLog(player1, player2, count) {
     damageEl.innerText = `Урон: ${count}`;
     hpEl.innerText = `Оставшиеся жизни: ${current}`;
 
-    logContainer.appendChild(textEl).appendChild(damageEl).appendChild(hpEl);
+    logContainer.appendChild(textEl);
+    logContainer.appendChild(damageEl);
+    logContainer.appendChild(hpEl);
 
     $logs.insertBefore(logContainer, $logs.children[0]);
 }
