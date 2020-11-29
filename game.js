@@ -5,6 +5,7 @@ import { renderLog } from './log.js';
 import { getRandom } from './utils.js';
 
 const $control = document.querySelector('.control');
+const $logs = document.getElementById('logs');
 
 const initCounterPressingBtn = (count = 0, btn) => {
     const innerText = btn.innerText;
@@ -123,6 +124,7 @@ export class Game {
     resetGame = () => {
         this.clearButtons();
         document.querySelector('.game_over').remove();
+        $logs.innerHTML = '';
 
         this.initGame();
     }

@@ -32,7 +32,9 @@ export function renderLog(player1, player2, count) {
     damageEl.innerText = `Урон: ${count}`;
     hpEl.innerText = `Оставшиеся жизни: ${current}`;
 
-    logContainer.appendChild(textEl).appendChild(damageEl).appendChild(hpEl);
+    logContainer.appendChild(textEl);
+    logContainer.appendChild(damageEl);
+    logContainer.appendChild(hpEl);
 
     $logs.insertBefore(logContainer, $logs.children[0]);
 }
