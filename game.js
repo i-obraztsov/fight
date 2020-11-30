@@ -88,7 +88,7 @@ export class Game {
                     renderLog(player1, player2, count);
                     return this.endGame;
                 });
-                player2.changeHP(kick.player1, (count) => {
+                player2.changeHP(kick.player2, (count) => {
                     renderLog(player2, player1, count);
                     return this.endGame;
                 });
