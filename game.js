@@ -1,26 +1,18 @@
 import { Pokemon } from './pokemon.js';
-import { pokemons } from './pokemons.js';
+import { Api } from './api.js';
 
 import { renderLog } from './log.js';
-import { getRandom } from './utils.js';
+import { getRandom, initCounterPressingBtn } from './utils.js';
 
 const $control = document.querySelector('.control');
 const $logs = document.getElementById('logs');
 
-const initCounterPressingBtn = (count = 0, btn) => {
-    const innerText = btn.innerText;
-    btn.innerText = `${innerText} (${count})`;
-    return () => {
-        count--;
-        if (count === 0)  btn.disabled = true;
-
-        btn.innerText = `${innerText} (${count})`;
-    }
-};
-
 export class Game {
     constructor() {
-        this.initGame();
+        this.pokemons = null;
+        this.player1 = null;
+        this.player2 = null;
+        this.api = new Api();
     }
 
     startGame = () => {
@@ -28,18 +20,23 @@ export class Game {
         this.createAttacks();
     }
 
-    initGame = () => {
-        const { pokemon1, pokemon2, } = this.getPokemons(pokemons.length);
+    initGame = async () => {
+        this.pokemons = await this.api.fetchPokemons();
+
+        const hero = this.getHero();
+        const enemy = await this.api.fetchPokemons({
+            random: true,
+        })
 
         const player1 = new Pokemon({
-            ...pokemon1,
+            ...hero,
             selectors: 'player1',
-        })
+        });
 
         const player2 = new Pokemon({
-            ...pokemon2,
+            ...enemy,
             selectors: 'player2',
-        })
+        });
 
         this.player1 = player1;
         this.player2 = player2;
@@ -67,37 +64,31 @@ export class Game {
         return btn;
     }
 
-    getPokemons(len) {
-        let random = [];
-        for(let i = 0; i < len; i++) {
-            if (random.length === 2) break;
-
-            const rand = getRandom(0, len - 1);
-            if (random[0] !== rand) {
-                random.push(rand);
-            }
-        }
-
-        return {
-            pokemon1: pokemons[random[0]],
-            pokemon2: pokemons[random[1]]
-        }
+    getHero() {
+        return this.pokemons[getRandom(0, this.pokemons.length - 1)]
     }
 
     createAttacks = () => {
         const { player1, player2 } = this;
 
-        player1.attacks.forEach(({ name, maxCount, minDamage, maxDamage }) => {
+        player1.attacks.forEach(({ name, maxCount, minDamage, maxDamage, id }) => {
             const btn = this.makeButton(name);
 
             const counterKick = initCounterPressingBtn(maxCount, btn);
-            btn.addEventListener('click', () => {
-                // player1.changeHP(getRandom(minDamage, maxDamage), (count) => {
-                //     renderLog(player1, player2, count);
-                //     return this.endGame;
-                // });
+            btn.addEventListener('click', async () => {
                 counterKick();
-                player2.changeHP(getRandom(minDamage, maxDamage), (count) => {
+
+                const { kick } = await this.api.fetchDamage({
+                    player1id: player1.id,
+                    attackId: id,
+                    player2id: player2.id,
+                });
+
+                player1.changeHP(kick.player1, (count) => {
+                    renderLog(player1, player2, count);
+                    return this.endGame;
+                });
+                player2.changeHP(kick.player2, (count) => {
                     renderLog(player2, player1, count);
                     return this.endGame;
                 });
